@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import ar.com.api.disneyalkemy.entities.Personaje;
 import ar.com.api.disneyalkemy.models.response.GenericResponse;
+import ar.com.api.disneyalkemy.models.response.PersonajeCompleto;
 import ar.com.api.disneyalkemy.models.response.PersonajeModel;
 import ar.com.api.disneyalkemy.services.PersonajeService;
 import ar.com.api.disneyalkemy.services.PersonajeService.ValidacionPersonajeEnum;
@@ -51,9 +52,10 @@ public class PersonajesController {
     }
 
     @GetMapping("/characters/details/{personajeId}")
-    public ResponseEntity<Personaje> traerPersonaje(@PathVariable Integer personajeId){
+    public ResponseEntity<PersonajeCompleto> traerPersonaje(@PathVariable Integer personajeId){
         Personaje p = service.traerPersonaje(personajeId);
-        return ResponseEntity.ok(p);
+        PersonajeCompleto personaje = PersonajeCompleto.convertirDesde(p);
+        return ResponseEntity.ok(personaje);
     }
 
     @GetMapping("/characters/all")
@@ -90,18 +92,43 @@ public class PersonajesController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/characters?name={nombre}")
-    public ResponseEntity<Personaje> traerPersonajePorNombre(@PathVariable String nombre){
-        return ResponseEntity.ok(service.traerPersonajePorNombre(nombre));
+    @RequestMapping(value = "characters", method = RequestMethod.GET, params = "name")
+    public ResponseEntity<PersonajeCompleto> traerPersonajePorNombre(@RequestParam("name") String nombre){
+        Personaje p = service.traerPersonajePorNombre(nombre);
+        PersonajeCompleto personaje = PersonajeCompleto.convertirDesde(p);
+        return ResponseEntity.ok(personaje);
     }
 
-    @GetMapping("/characters?age={edad}")
-    public ResponseEntity<List<Personaje>> traerPersonajesPorEdad(@PathVariable Integer edad){
-        return ResponseEntity.ok(service.traerPersonajesPorEdad(edad));
+    @RequestMapping(value = "characters", method = RequestMethod.GET, params = "age")
+    public ResponseEntity<List<PersonajeCompleto>> traerPersonajesPorEdad(@RequestParam("age") Integer edad){
+        List<Personaje> personajes = service.traerPersonajesPorEdad(edad);
+        List<PersonajeCompleto> personajesResponse = new ArrayList<>();
+        for(Personaje p : personajes){
+            PersonajeCompleto personaje = PersonajeCompleto.convertirDesde(p);
+            personajesResponse.add(personaje); 
+        }
+        return ResponseEntity.ok(personajesResponse);
     }
 
-    @GetMapping("/characters?movies={idMovie}")
-    public ResponseEntity<List<Personaje>> traerPersonajesPorPelicula(@PathVariable Integer idMovie){
-        return ResponseEntity.ok(service.traerPersonajesPorPelicula(idMovie));
+    @RequestMapping(value = "characters", method = RequestMethod.GET, params = "movies")
+    public ResponseEntity<List<PersonajeCompleto>> traerPersonajesPorPelicula(@RequestParam("movies") Integer idMovie){
+        List<Personaje> personajes = service.traerPersonajesPorPelicula(idMovie);
+        List<PersonajeCompleto> personajesResponse = new ArrayList<>();
+        for(Personaje p : personajes){
+            PersonajeCompleto personaje = PersonajeCompleto.convertirDesde(p);
+            personajesResponse.add(personaje); 
+        }
+        return ResponseEntity.ok(personajesResponse);
+    }
+
+    @RequestMapping(value = "characters", method = RequestMethod.GET, params = "weight")
+    public ResponseEntity<List<PersonajeCompleto>> traerPersonajesPorPeso(@RequestParam("weight") Integer peso){
+        List<Personaje> personajes = service.traerPersonajesPorPeso(peso);
+        List<PersonajeCompleto> personajesResponse = new ArrayList<>();
+        for(Personaje p : personajes){
+            PersonajeCompleto personaje = PersonajeCompleto.convertirDesde(p);
+            personajesResponse.add(personaje); 
+        }
+        return ResponseEntity.ok(personajesResponse);
     }
 }

@@ -28,7 +28,7 @@ public class PersonajeService {
         p.setPeso(peso);
         p.setHistoria(historia);
         if(peliculas != null)
-            this.agregarPeliculas(p);
+            this.agregarPeliculas(p, peliculas);
         repo.save(p);
         return p;
     }
@@ -49,9 +49,8 @@ public class PersonajeService {
         return ValidacionPersonajeEnum.OK;
     }
 
-    public void agregarPeliculas(Personaje p){
-        List<Pelicula> lista = p.getPeliculas();
-        for(Pelicula pelicula : lista){
+    public void agregarPeliculas(Personaje p, List<Pelicula> peliculas){
+        for(Pelicula pelicula : peliculas){
             Pelicula peli = peliculaRepo.findByPeliculaId(pelicula.getPeliculaId());
             p.agregarPelicula(peli);
         }
@@ -78,7 +77,7 @@ public class PersonajeService {
         if(p.getPeso() != null)
             personaje.setPeso(p.getPeso());
         if(p.getPeliculas() != null)
-            this.agregarPeliculas(p);
+            this.agregarPeliculas(personaje, p.getPeliculas());
         repo.save(personaje);
         return personaje.getPersonajeId();
     }
@@ -102,6 +101,10 @@ public class PersonajeService {
     public List<Personaje> traerPersonajesPorPelicula(Integer peliculaId){
         Pelicula peli = peliculaRepo.findByPeliculaId(peliculaId);
         return peli.getPersonajes();
+    }
+
+    public List<Personaje> traerPersonajesPorPeso(Integer peso){
+        return repo.findAllByPeso(peso);
     }
 }
                                                                                              

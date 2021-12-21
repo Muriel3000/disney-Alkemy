@@ -57,5 +57,34 @@ public class PeliculaController {
         return ResponseEntity.ok(peliResponse);
     }
 
+    @PutMapping("/movies/{peliculaId}")
+    public ResponseEntity<GenericResponse> modificarPelicula(@PathVariable Integer peliculaId, @RequestBody Pelicula p){
+        
+        GenericResponse response = new GenericResponse();
+        ValidacionPeliculaEnum validacion = service.validacion(p);
+
+        if(validacion == ValidacionPeliculaEnum.OK){
+            Integer peliculaModificadaId = service.modificarPelicula(peliculaId, p);          
+            response.isOk = true;
+            response.message = "La pelicula ha sido modificada";
+            response.id = peliculaModificadaId;
+            return ResponseEntity.ok(response);
+        } else {
+            response.isOk = false;
+            response.message = "Error(" + validacion.toString() + ")";
+            return ResponseEntity.badRequest().body(response);
+        }  
+    }
+
+    @DeleteMapping("/movies/{peliculaId}")
+    public ResponseEntity<GenericResponse> eliminarPelicula(@PathVariable Integer peliculaId){
+        service.eliminarPelicula(peliculaId);
+        GenericResponse response = new GenericResponse();
+        response.isOk = true;
+        response.message = "La elicula ha sido eliminada";
+        response.id = peliculaId;
+        return ResponseEntity.ok(response);
+    }
+
 
 }

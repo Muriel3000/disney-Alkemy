@@ -83,6 +83,13 @@ public class PersonajeService {
     }
 
     public void eliminarPersonaje(Integer personajeId){
+        Personaje p = repo.findByPersonajeId(personajeId);
+        for(Pelicula peli : p.getPeliculas()){
+            peli.getPersonajes().remove(p);
+            peliculaRepo.save(peli);
+        }
+        p.getPeliculas().removeAll(p.getPeliculas());
+        repo.save(p);
         repo.deleteById(personajeId);
     }
 

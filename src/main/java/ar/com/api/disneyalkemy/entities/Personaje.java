@@ -1,5 +1,6 @@
 package ar.com.api.disneyalkemy.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Generated;
@@ -23,7 +24,7 @@ public class Personaje {
     private String historia;
 
     @ManyToMany(mappedBy = "personajes")
-    private List<Pelicula> peliculas;
+    private List<Pelicula> peliculas = new ArrayList<>();
 
     public Integer getPersonajeId() {
         return personajeId;

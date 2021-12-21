@@ -1,5 +1,6 @@
 package ar.com.api.disneyalkemy.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class Pelicula{
         joinColumns = @JoinColumn(name = "pelicula_id"),
         inverseJoinColumns = @JoinColumn(name = "personaje_id")
     )
-    private List<Personaje> personajes;
+    private List<Personaje> personajes = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "genero_id", referencedColumnName = "genero_id")

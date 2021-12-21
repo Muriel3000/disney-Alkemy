@@ -47,8 +47,10 @@ public class PeliculaService {
                     return ValidacionPeliculaEnum.PERSONAJE_ASIGNADO_INEXISTENTE;
             }
         }
-        if(verificarCalificacion(p.getCalificacion()) == false)
+        if(p.getCalificacion() != null){
+            if(verificarCalificacion(p.getCalificacion()) == false)
             return ValidacionPeliculaEnum.CALIFICACION_INVALIDA;
+        }
         return ValidacionPeliculaEnum.OK;
     }
 
@@ -76,4 +78,36 @@ public class PeliculaService {
     public Pelicula traerPelicula(Integer peliId){
         return repo.findByPeliculaId(peliId);
     }
+
+    public Integer modificarPelicula(Integer peliculaId, Pelicula p){
+        Pelicula peli = repo.findByPeliculaId(peliculaId);
+        if(p.getGenero() != null){
+            Genero g = generoRepo.findByGeneroId(p.getGenero().getGeneroId());
+            peli.setGenero(g);
+        }
+        if(p.getImagen() != null)
+            peli.setImagen(p.getImagen());
+        if(p.getTitulo() != null)
+            peli.setTitulo(p.getTitulo());
+        if(p.getCalificacion() != null)
+            peli.setCalificacion(p.getCalificacion());
+        if(p.getPersonajes() != null)
+            this.agregarPersonajes(peli, p.getPersonajes());
+        repo.save(peli);
+        return peli.getPeliculaId();
+    }
+
+    public void eliminarPelicula(Integer peliId){
+        Pelicula p = repo.findByPeliculaId(peliId);
+        p.getGenero().getPeliculas().remove(p);
+        generoRepo.save(p.getGenero());
+        for(Personaje personaje : p.getPersonajes()){
+            personaje.getPeliculas().remove(p);
+            personajeRepo.save(personaje);
+        }
+        p.getPersonajes().removeAll(p.getPersonajes());
+        repo.save(p);
+        repo.deleteById(peliId);
+    }
+
 }

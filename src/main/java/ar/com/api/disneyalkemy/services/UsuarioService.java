@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import ar.com.api.disneyalkemy.entities.Usuario;
 import ar.com.api.disneyalkemy.repositories.UsuarioRepository;
 import ar.com.api.disneyalkemy.security.Crypto;
+import ar.com.api.disneyalkemy.sistema.comm.EmailService;
 
 @Service
 public class UsuarioService {
@@ -20,8 +21,8 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository repo;
 
-    /*@Autowired
-    private EmailService emailService;*/
+    @Autowired
+    private EmailService emailService;
     
     public Usuario crearUsuario(String email, String password){
        
@@ -30,15 +31,13 @@ public class UsuarioService {
         u.setEmail(email);
         u.setPassword(Crypto.encrypt(password, email.toLowerCase()));
         repo.save(u);
-        //emailService.SendEmail(u.getEmail(), "Registracion exitosa", "Bienvenido, ud ha sido registrado");
+        emailService.SendEmail(u.getEmail(), "Registracion exitosa", "Bienvenido, ud ha sido registrado en Disney Alkemy!");
 
         return u;
     }
         
     public Usuario login(String username, String password) {
 
-        // Metodo recibe usuario y contraseña: validar usuario y contraseña
-             
         Usuario u = buscarPorUsername(username);
         
         if (u == null || !u.getPassword().equals(Crypto.encrypt(password, u.getEmail().toLowerCase()))) {

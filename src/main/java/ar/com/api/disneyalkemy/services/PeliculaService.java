@@ -1,7 +1,6 @@
 package ar.com.api.disneyalkemy.services;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,9 +52,16 @@ public class PeliculaService {
         }
         return ValidacionPeliculaEnum.OK;
     }
+    
+    public ValidacionPeliculaEnum validacionPorId(Integer peliId){
+        if(repo.findByPeliculaId(peliId) != null)
+            return ValidacionPeliculaEnum.OK;
+        else return ValidacionPeliculaEnum.PELICULA_INEXISTENTE;
+    }
 
     public enum ValidacionPeliculaEnum{
-        OK, GENERO_INEXISTENTE, PERSONAJE_ASIGNADO_INEXISTENTE, CALIFICACION_INVALIDA
+        OK, GENERO_INEXISTENTE, PERSONAJE_ASIGNADO_INEXISTENTE, CALIFICACION_INVALIDA, 
+        PELICULA_INEXISTENTE, TITULO_INEXISTENTE
     }
 
     public void agregarPersonajes(Pelicula peli, List<Personaje> personajes){
@@ -108,6 +114,29 @@ public class PeliculaService {
         p.getPersonajes().removeAll(p.getPersonajes());
         repo.save(p);
         repo.deleteById(peliId);
+    }
+
+    public Pelicula traerPeliculaPorTitulo(String titulo){
+        return repo.findByTitulo(titulo);
+    }
+
+    public List<Pelicula> traerPeliculasPorGenero(Integer generoId){
+        Genero g = generoRepo.findByGeneroId(generoId);
+        return repo.findAllByGenero(g);
+    }
+
+    public List<Pelicula> traerPeliculasEnOrden(String orden){
+        if(orden.equals("ASC")){
+            List<Pelicula> pelis = repo.findAll();
+            List<Pelicula> pelisReturn = new ArrayList<>();
+            for(int i = pelis.size() - 1; i >= 0; i --){
+                Pelicula p = pelis.get(i);
+                pelisReturn.add(p);
+            }
+            return pelisReturn;
+        } else if(orden.equals("DESC")){
+            return repo.findAll();
+        } else return null;
     }
 
 }

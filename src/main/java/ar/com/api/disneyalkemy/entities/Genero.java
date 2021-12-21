@@ -1,5 +1,6 @@
 package ar.com.api.disneyalkemy.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Generated;
@@ -18,7 +19,7 @@ public class Genero {
     private String imagen;
 
     @OneToMany(mappedBy = "genero", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Pelicula> peliculas;
+    private List<Pelicula> peliculas = new ArrayList<>();
 
     public Integer getGeneroId() {
         return generoId;

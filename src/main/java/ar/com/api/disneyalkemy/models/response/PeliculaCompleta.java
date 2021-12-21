@@ -11,6 +11,7 @@ public class PeliculaCompleta {
     public String titulo;
     public Integer calificacion;
     public Date fechaDeCreacion;
+    public GeneroModel genero;
     public List<PersonajeModel> personajes;
 
     public static PeliculaCompleta convertirDesde(Pelicula p){
@@ -20,6 +21,10 @@ public class PeliculaCompleta {
         peli.titulo = p.getTitulo();
         peli.calificacion = p.getCalificacion();
         peli.fechaDeCreacion = p.getFechaDeCreacion();
+        if(p.getGenero() != null){
+            GeneroModel gm = GeneroModel.convertirDesde(p.getGenero());
+            peli.genero = gm;
+        }
         if(p.getPersonajes() != null){
             peli.personajes = new ArrayList<>();
             for(Personaje personaje : p.getPersonajes()){

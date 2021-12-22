@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ar.com.api.disneyalkemy.entities.Usuario;
 import ar.com.api.disneyalkemy.models.request.*;
 import ar.com.api.disneyalkemy.models.response.*;
+import ar.com.api.disneyalkemy.security.Crypto;
 import ar.com.api.disneyalkemy.security.jwt.JWTTokenUtil;
 import ar.com.api.disneyalkemy.services.JWTUserDetailsService;
 import ar.com.api.disneyalkemy.services.UsuarioService;;
@@ -44,7 +46,11 @@ public class AuthController {
 
         RegistrationResponse r = new RegistrationResponse();
 
-        // aca creamos la persona y el usuario a traves del service.
+        Usuario u = usuarioService.buscarPorUsername(req.email);
+        
+        if (u != null) {
+            throw new BadCredentialsException("Nombre de usuario existente, cambiar nombre");
+        }
 
         Usuario usuario = usuarioService.crearUsuario(req.email, req.password);
 

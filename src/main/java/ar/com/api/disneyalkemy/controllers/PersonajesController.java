@@ -25,7 +25,7 @@ public class PersonajesController {
         
         GenericResponse response = new GenericResponse();
         
-        ValidacionPersonajeEnum validacion = service.validacion(p);
+        ValidacionPersonajeEnum validacion = service.validacionCreacion(p);
         
         if(validacion == ValidacionPersonajeEnum.OK){
             Personaje personaje = service.crearPersonaje(p.getImagen(), p.getNombre(), p.getEdad(), 

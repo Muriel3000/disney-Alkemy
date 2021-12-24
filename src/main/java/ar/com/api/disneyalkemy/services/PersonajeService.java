@@ -33,8 +33,13 @@ public class PersonajeService {
         return p;
     }
 
+    public ValidacionPersonajeEnum validacionCreacion(Personaje p){
+        if(p.getImagen() == null || p.getNombre() == null || p.getEdad() == null || p.getPeso() == null || p.getHistoria() == null)
+            return ValidacionPersonajeEnum.FALTA_ATRIBUTO;
+        return validacion(p);
+    }
+    
     public ValidacionPersonajeEnum validacion(Personaje p){
-        
         if(repo.findByNombre(p.getNombre()) != null){ 
             return ValidacionPersonajeEnum.NOMBRE_DE_PERSONAJE_EXISTENTE;
         }
@@ -57,7 +62,7 @@ public class PersonajeService {
     }
 
     public enum ValidacionPersonajeEnum {
-    OK, PELICULA_ASIGNADA_INEXISTENTE, NOMBRE_DE_PERSONAJE_EXISTENTE
+    OK, PELICULA_ASIGNADA_INEXISTENTE, NOMBRE_DE_PERSONAJE_EXISTENTE, FALTA_ATRIBUTO;
     }
     
     public List<Personaje> traerTodos(){

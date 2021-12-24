@@ -8,6 +8,7 @@ import java.util.*;
 
 import ar.com.api.disneyalkemy.entities.Genero;
 import ar.com.api.disneyalkemy.models.response.GenericResponse;
+import ar.com.api.disneyalkemy.models.response.GeneroModel;
 import ar.com.api.disneyalkemy.services.GeneroService;
 import ar.com.api.disneyalkemy.services.GeneroService.ValidacionGeneroEnum;
 
@@ -38,7 +39,13 @@ public class GeneroController {
     }
 
     @GetMapping("/generos")
-    public ResponseEntity<List<Genero>> traerGeneros(){
-        return ResponseEntity.ok(service.traerTodos());
+    public ResponseEntity<List<GeneroModel>> traerGeneros(){
+        List<Genero> generos = service.traerTodos();
+        List<GeneroModel> gResponse = new ArrayList<>();
+        for(Genero g : generos){
+            GeneroModel generoResponse = GeneroModel.convertirDesde(g);
+            gResponse.add(generoResponse);
+        }
+        return ResponseEntity.ok(gResponse);
     }
 }

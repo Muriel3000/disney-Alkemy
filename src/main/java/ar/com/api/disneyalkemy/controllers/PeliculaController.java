@@ -25,10 +25,10 @@ public class PeliculaController {
         
         GenericResponse r = new GenericResponse();
         
-        ValidacionPeliculaEnum validacion = service.validacion(p);
+        ValidacionPeliculaEnum validacion = service.validacionCreacion(p);
 
         if(validacion == ValidacionPeliculaEnum.OK){
-            Pelicula pelicula = service.crearPelicula(p.getImagen(), p.getTitulo(), p.getCalificacion(), p.getPersonajes(), p.getGenero());
+            Pelicula pelicula = service.crearPelicula(p.getImagen(), p.getTitulo(), p.getCalificacion(), p.getPersonajes(), p.getGenero(), p.getFechaDeCreacion());
             r.isOk = true;
             r.id = pelicula.getPeliculaId();
             r.message = "Pelicula creada correctamente";

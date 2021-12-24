@@ -24,22 +24,20 @@ public class PeliculaService {
     @Autowired
     private PersonajeRepository personajeRepo;
 
-    public Pelicula crearPelicula(String imagen, String titulo, Integer calificacion, List<Personaje> personajes, Genero genero){
+    public Pelicula crearPelicula(String imagen, String titulo, Integer calificacion, List<Personaje> personajes, Genero genero, Date fechaCreacion){
         Pelicula p = new Pelicula();
         p.setImagen(imagen);
         p.setTitulo(titulo);
         p.setGenero(generoRepo.findByGeneroId(genero.getGeneroId()));
         if(personajes != null)
             this.agregarPersonajes(p, personajes);
-        p.setFechaDeCreacion(new Date());
+        p.setFechaDeCreacion(fechaCreacion);
         p.setCalificacion(calificacion);
         repo.save(p);
         return p;
     }
 
     public ValidacionPeliculaEnum validacion(Pelicula p){
-        if(p.getGenero() == null || generoRepo.findByGeneroId(p.getGenero().getGeneroId()) == null)
-            return ValidacionPeliculaEnum.GENERO_INEXISTENTE;
         if(p.getPersonajes() != null){
             for(Personaje personaje : p.getPersonajes()){
                 if(personajeRepo.findByPersonajeId(personaje.getPersonajeId()) == null)
@@ -50,23 +48,23 @@ public class PeliculaService {
             if(verificarCalificacion(p.getCalificacion()) == false)
             return ValidacionPeliculaEnum.CALIFICACION_INVALIDA;
         }
+        if(repo.findByTitulo(p.getTitulo()) != null)
+            return ValidacionPeliculaEnum.PELICULA_EXISTENTE;
         return ValidacionPeliculaEnum.OK;
+    }
+
+    public ValidacionPeliculaEnum validacionCreacion(Pelicula p){
+        if(p.getGenero() == null || generoRepo.findByGeneroId(p.getGenero().getGeneroId()) == null)
+            return ValidacionPeliculaEnum.GENERO_INEXISTENTE;
+        if(p.getTitulo() == null || p.getImagen() == null  || p.getFechaDeCreacion() == null || p.getCalificacion() == null)
+                return ValidacionPeliculaEnum.FALTA_ATRIBUTO;
+        return validacion(p);
     }
 
     public ValidacionPeliculaEnum validacionModificacion(Pelicula p){
         if(p.getGenero() != null && generoRepo.findByGeneroId(p.getGenero().getGeneroId()) == null)
                 return ValidacionPeliculaEnum.GENERO_INEXISTENTE;
-        if(p.getPersonajes() != null){
-            for(Personaje personaje : p.getPersonajes()){
-                if(personajeRepo.findByPersonajeId(personaje.getPersonajeId()) == null)
-                    return ValidacionPeliculaEnum.PERSONAJE_ASIGNADO_INEXISTENTE;
-            }
-        }
-        if(p.getCalificacion() != null){
-            if(verificarCalificacion(p.getCalificacion()) == false)
-            return ValidacionPeliculaEnum.CALIFICACION_INVALIDA;
-        }
-        return ValidacionPeliculaEnum.OK;
+        return validacion(p);
     }
     
     public ValidacionPeliculaEnum validacionPorId(Integer peliId){
@@ -77,7 +75,7 @@ public class PeliculaService {
 
     public enum ValidacionPeliculaEnum{
         OK, GENERO_INEXISTENTE, PERSONAJE_ASIGNADO_INEXISTENTE, CALIFICACION_INVALIDA, 
-        PELICULA_INEXISTENTE, TITULO_INEXISTENTE
+        PELICULA_INEXISTENTE, TITULO_INEXISTENTE, PELICULA_EXISTENTE, FALTA_ATRIBUTO;
     }
 
     public void agregarPersonajes(Pelicula peli, List<Personaje> personajes){

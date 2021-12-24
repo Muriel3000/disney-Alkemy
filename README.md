@@ -1,4 +1,5 @@
 # disney-Alkemy
+disney-Alkemy es una API Rest que he desarrollado para el challenge de Alkemy en Java, utilizando Spring Boot y la librería Spring Security
 
 # Deploy
 https://disney-alkemy-muri.herokuapp.com/

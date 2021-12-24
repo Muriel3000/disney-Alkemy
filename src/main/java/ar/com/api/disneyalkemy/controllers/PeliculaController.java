@@ -72,7 +72,7 @@ public class PeliculaController {
     public ResponseEntity<GenericResponse> modificarPelicula(@PathVariable Integer peliculaId, @RequestBody Pelicula p){
         
         GenericResponse response = new GenericResponse();
-        ValidacionPeliculaEnum validacion = service.validacion(p);
+        ValidacionPeliculaEnum validacion = service.validacionModificacion(p);
 
         if(validacion == ValidacionPeliculaEnum.OK){
             Integer peliculaModificadaId = service.modificarPelicula(peliculaId, p);          

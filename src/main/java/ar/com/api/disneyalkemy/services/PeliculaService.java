@@ -52,6 +52,22 @@ public class PeliculaService {
         }
         return ValidacionPeliculaEnum.OK;
     }
+
+    public ValidacionPeliculaEnum validacionModificacion(Pelicula p){
+        if(p.getGenero() != null && generoRepo.findByGeneroId(p.getGenero().getGeneroId()) == null)
+                return ValidacionPeliculaEnum.GENERO_INEXISTENTE;
+        if(p.getPersonajes() != null){
+            for(Personaje personaje : p.getPersonajes()){
+                if(personajeRepo.findByPersonajeId(personaje.getPersonajeId()) == null)
+                    return ValidacionPeliculaEnum.PERSONAJE_ASIGNADO_INEXISTENTE;
+            }
+        }
+        if(p.getCalificacion() != null){
+            if(verificarCalificacion(p.getCalificacion()) == false)
+            return ValidacionPeliculaEnum.CALIFICACION_INVALIDA;
+        }
+        return ValidacionPeliculaEnum.OK;
+    }
     
     public ValidacionPeliculaEnum validacionPorId(Integer peliId){
         if(repo.findByPeliculaId(peliId) != null)
